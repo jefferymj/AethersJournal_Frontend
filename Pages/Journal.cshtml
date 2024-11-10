@@ -1,4 +1,4 @@
-@page
+@page "{Date}"
 @model AethersJournal.Pages.JournalModel
 @{
 
@@ -11,6 +11,29 @@
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
                 <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
             </svg>
+            <div id="date-list">
+                <ul>
+                    @foreach (DateTime datetime in @Model.Dates!)
+                    {
+                        @if (datetime.ToString("yyyy-MM-dd") == @Model.Date)
+                        {
+                            <a href="/Journal/@datetime.ToString("yyyy-MM-dd")">
+                                <li id="greyed-date">
+                                    @datetime.ToString("dddd") @datetime.ToString("MMMM") @datetime.Day @datetime.Year
+                                </li>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="/Journal/@datetime.ToString("yyyy-MM-dd")">
+                                <li id="date">
+                                    @datetime.ToString("dddd") @datetime.ToString("MMMM") @datetime.Day @datetime.Year
+                                </li>
+                            </a>
+                        }
+                    }
+                </ul>
+            </div>
         </div>
         <div id="journal-navigations">
             <a href="" class="navigation" id="navigation-prev">
