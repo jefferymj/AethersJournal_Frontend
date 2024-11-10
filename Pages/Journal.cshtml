@@ -1,0 +1,27 @@
+@page
+@model AethersJournal.Pages.JournalModel
+@{
+
+}
+
+<div id="journal-container">
+    <div id="title-container">
+        <div id="title-date">
+            <h1>Monday, October 6 2024</h1>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+            </svg>
+        </div>
+        <div id="journal-navigations">
+            <a href="" class="navigation" id="navigation-prev">
+                &lt Previous
+            </a>
+            <a href="" class="navigation" id="navigation-next">
+                Next &gt </a>
+        </div>
+    </div>
+    <div id="journal-entry-container">
+        <input type="text" name="title" id="entry-title" placeholder="Title">
+        <textarea name="journal-entry" placeholder="Description"></textarea>
+    </div>
+</div>

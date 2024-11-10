@@ -1,0 +1,83 @@
+#journal-container {
+    position: relative;
+}
+
+#title-date {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#title-date h1 {
+    color: var(--title-color);
+    font-family: var(--title-font-family);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 3.3em;
+    margin: 0 30px 10px 0;
+}
+
+#title-date svg {
+    fill: var(--title-color);
+    width: 40px;
+    height: 40px;
+}
+
+#journal-navigations {
+    display: flex;
+    flex-direction: row;
+}
+
+.navigation {
+    text-decoration: none; 
+    color: var(--title-fainted-color);
+    font-family: var(--desc-font-family);
+    font-size: 1.2em;
+}
+
+#navigation-next {
+    margin-left: 40px;
+}
+
+#journal-entry-container {
+    position: relative;
+    margin-top: 30px;
+    height: 75vh;
+    padding: 40px 50px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border-radius: 15px;
+    background-color: white;
+}
+
+#journal-entry-container input::placeholder {
+    color: var(--title-fainted-muted-color);
+}
+
+#journal-entry-container input:focus {
+    outline: none;
+}
+
+#journal-entry-container input {
+    color: var(--title-fainted-color);
+    font-family: var(--title-font-family);
+    font-size: 2.2em;
+    border: none;
+}
+
+#journal-entry-container textarea {
+    flex: 1;
+    margin-top: 5px;
+    outline: none;
+    border: none;
+    resize: none;
+    color: var(--title-fainted-color);
+    font-family: var(--desc-font-family);
+    font-size: 1em;
+}
+
+#journal-entry-container textarea::placeholder {
+    color: var(--title-fainted-muted-color);
+}
+
