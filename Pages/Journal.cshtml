@@ -1,14 +1,14 @@
-@page "{Date}"
+@page "{Date?}"
 @model AethersJournal.Pages.JournalModel
 @{
 
 }
-
+<script src="~/js/journal.js" defer></script>
 <div id="journal-container">
     <div id="title-container">
         <div id="title-date">
             <h1>Monday, October 6 2024</h1>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+            <svg id="date-dropdown-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
                 <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
             </svg>
             <div id="date-list">
@@ -25,7 +25,7 @@
                         }
                         else
                         {
-                            <a href="/Journal/@datetime.ToString("yyyy-MM-dd")">
+                            <a id="date-link" href="/Journal/@datetime.ToString("yyyy-MM-dd")">
                                 <li id="date">
                                     @datetime.ToString("dddd") @datetime.ToString("MMMM") @datetime.Day @datetime.Year
                                 </li>

@@ -12,6 +12,10 @@ namespace AethersJournal.Pages
         public string? Date {get; set;}
         public void OnGet()
         {
+            if (Date == null) {
+                Date = DateTime.Today.ToString("yyyy-MM-dd");
+            }
+            
             Dates = new List<DateTime>();
             DateTime startDate = DateTime.Today.AddMonths(-1); 
             DateTime endDate = DateTime.Today; 
