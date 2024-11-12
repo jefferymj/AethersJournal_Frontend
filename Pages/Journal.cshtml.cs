@@ -6,19 +6,24 @@ namespace AethersJournal.Pages
 {
     public class JournalModel : PageModel
     {
-        public List<DateTime>? Dates {get; private set;}
-        
-        [FromRoute]
-        public string? Date {get; set;}
+        public List<DateTime>? Dates { get; private set; }
+        public DateTime pageDateTime { get; private set; }
+
+        [FromQuery]
+        public string? date { get; set; }
+
         public void OnGet()
         {
-            if (Date == null) {
-                Date = DateTime.Today.ToString("yyyy-MM-dd");
+            if (date == null)
+            {
+                pageDateTime = DateTime.Today;
+                date = DateTime.Today.ToString("yyyy-MM-dd");
             }
-            
+            pageDateTime = DateTime.Parse(date!);
+
             Dates = new List<DateTime>();
-            DateTime startDate = DateTime.Today.AddMonths(-1); 
-            DateTime endDate = DateTime.Today; 
+            DateTime startDate = DateTime.Today.AddMonths(-1);
+            DateTime endDate = DateTime.Today;
 
             for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
             {

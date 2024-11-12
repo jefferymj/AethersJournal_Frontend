@@ -1,23 +1,66 @@
-@page "{Date?}"
+@page "{date?}"
 @model AethersJournal.Pages.JournalModel
-@{
+@functions {
+    public string next()
+    {
+        DateTime todayDate = DateTime.Today;
+        if (@Model.date!.Equals(todayDate.ToString("yyyy-MM-dd")))
+        {
+            return @Model.date;
+        }
 
+        DateTime queryDate = @Model.pageDateTime.AddDays(1);
+        return queryDate.ToString("yyyy-MM-dd");
+    }
+    public string previous()
+    {
+        int lastElementIndex = @Model.Dates!.Count() - 1;
+        DateTime lastDate = @Model.Dates!.ElementAt(lastElementIndex);
+        if (@Model.date!.Equals(lastDate.ToString("yyyy-MM-dd")))
+        {
+            return @Model.date;
+        }
+
+        DateTime queryDate = @Model.pageDateTime.AddDays(-1);
+        return queryDate.ToString("yyyy-MM-dd");
+    }
 }
 <script src="~/js/journal.js" defer></script>
+
+@section Scripts
+{
+    <script>
+        function Next() {
+            const nextDate = "@next()";
+            window.location.href = `/Journal?date=${nextDate}`;
+        }
+
+        function Previous() {
+            const prevDate = "@previous()";
+            window.location.href = `/Journal?date=${prevDate}`;
+        }
+    </script>
+}
+
 <div id="journal-container">
     <div id="title-container">
-        <div id="title-date">
-            <h1>Monday, October 6 2024</h1>
-            <svg id="date-dropdown-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-                <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
-            </svg>
+        <div id="title-section">
+            <div id="date-include-dropdown">
+                <h1>@Model.pageDateTime.ToString("dddd"), @Model.pageDateTime.ToString("MMMM") @Model.pageDateTime.Day
+                @Model.pageDateTime.Year</h1>
+                <svg id="date-dropdown-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                    width="24px" fill="#e8eaed">
+                    <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
+                </svg>
+            </div>
+
             <div id="date-list">
                 <ul>
                     @foreach (DateTime datetime in @Model.Dates!)
                     {
-                        @if (datetime.ToString("yyyy-MM-dd") == @Model.Date)
+                        @if (datetime.ToString("yyyy-MM-dd") == @Model.date)
                         {
-                            <a href="/Journal/@datetime.ToString("yyyy-MM-dd")">
+                            <a href="/Journal?date=@datetime.ToString("yyyy-MM-dd")">
                                 <li id="greyed-date">
                                     @datetime.ToString("dddd") @datetime.ToString("MMMM") @datetime.Day @datetime.Year
                                 </li>
@@ -25,7 +68,7 @@
                         }
                         else
                         {
-                            <a id="date-link" href="/Journal/@datetime.ToString("yyyy-MM-dd")">
+                            <a id="date-link" href="/Journal?date=@datetime.ToString("yyyy-MM-dd")">
                                 <li id="date">
                                     @datetime.ToString("dddd") @datetime.ToString("MMMM") @datetime.Day @datetime.Year
                                 </li>
@@ -34,12 +77,15 @@
                     }
                 </ul>
             </div>
+            <button id="submit-button" onclick="">
+                Save Journal
+            </button>
         </div>
         <div id="journal-navigations">
-            <a href="" class="navigation" id="navigation-prev">
+            <a class="navigation" id="navigation-prev" onclick="Previous()">
                 &lt Previous
             </a>
-            <a href="" class="navigation" id="navigation-next">
+            <a class="navigation" id="navigation-next" onclick="Next()">
                 Next &gt </a>
         </div>
     </div>
