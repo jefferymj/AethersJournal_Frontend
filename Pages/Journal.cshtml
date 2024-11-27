@@ -1,4 +1,6 @@
 @page "{date?}"
+@using System.Text.Json
+@using System.Text
 @model AethersJournal.Pages.JournalModel
 @functions {
     public string next()
@@ -25,11 +27,16 @@
         return queryDate.ToString("yyyy-MM-dd");
     }
 }
+
 <script src="~/js/journal.js" defer></script>
 
 @section Scripts
 {
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            sendGetRequest();
+        });
+
         function Next() {
             const nextDate = "@next()";
             window.location.href = `/Journal?date=${nextDate}`;
@@ -39,6 +46,56 @@
             const prevDate = "@previous()";
             window.location.href = `/Journal?date=${prevDate}`;
         }
+
+        function sendGetRequest() {
+            const url = "http://localhost:5268/api/JournalEntry/getJournalEntry/6730566a4a5b6279cae53b66/@Model.pageDateTime.ToString("yyyy-MM-dd")";
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch journal entries.");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const title = document.getElementById("entry-title");
+                    const content = document.getElementById("journal-textarea");
+
+                    title.value = data.title;
+                    content.value = data.content;
+                })
+                .catch(error => {
+                    // console.error(error);
+                });
+        }
+
+        function sendPostRequest() {
+            const url = "http://localhost:5268/api/JournalEntry/addJournalEntry/6730566a4a5b6279cae53b66";
+            const title = document.getElementById("entry-title").value;
+            const content = document.getElementById("journal-textarea").value;
+            const date = "@Model.pageDateTime.ToString("yyyy-MM-dd")";
+
+            const journalEntryRequest = {
+                Title: title,
+                Content: content,
+                Date: date
+            };
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(journalEntryRequest)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to save journal entry.");
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
     </script>
 }
 
@@ -47,7 +104,7 @@
         <div id="title-section">
             <div id="date-include-dropdown">
                 <h1>@Model.pageDateTime.ToString("dddd"), @Model.pageDateTime.ToString("MMMM") @Model.pageDateTime.Day
-                @Model.pageDateTime.Year</h1>
+                    @Model.pageDateTime.Year</h1>
                 <svg id="date-dropdown-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
                     width="24px" fill="#e8eaed">
                     <path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z" />
@@ -77,7 +134,7 @@
                     }
                 </ul>
             </div>
-            <button id="submit-button" onclick="">
+            <button id="submit-button" onclick="sendPostRequest()">
                 Save Journal
             </button>
         </div>
@@ -91,6 +148,6 @@
     </div>
     <div id="journal-entry-container">
         <input type="text" name="title" id="entry-title" placeholder="Title">
-        <textarea name="journal-entry" placeholder="Description"></textarea>
+        <textarea name="journal-entry" id="journal-textarea" placeholder="Description"></textarea>
     </div>
 </div>
