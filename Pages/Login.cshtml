@@ -4,6 +4,24 @@
 
 }
 
+@section Scripts {
+    <script>
+        async function testCookie() {
+            const response = await fetch("http://localhost:5268/api/Session/test-cookie", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include"
+            });
+
+            if (response.ok) {
+                window.location.href = "/Journal";
+            }
+        }
+    </script>
+}
+
 <div id="container">
     <h1 id="login-title">Aethers Journal</h1>
     <div id="login-container">
@@ -15,7 +33,7 @@
             <label id="password-label">Password</label>
             <input id="password-input" />
         </div>
-        <button id="login-button">Login</button>
+        <button onclick="testCookie()" id="login-button">Login</button>
         <a id="register-link" href="/Register">Register</a>
     </div>
 </div>
