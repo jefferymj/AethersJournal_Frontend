@@ -33,8 +33,29 @@
 @section Scripts
 {
     <script>
+        // defer
         document.addEventListener("DOMContentLoaded", () => {
             sendGetRequest();
+
+            const chatboxContainer = document.getElementById("chatbox-container");
+            const chatboxButton = document.getElementById("chatbox-button");
+            chatboxButton.addEventListener("click", () => {
+                event.preventDefault();
+                checkChatboxOverflow();
+                chatboxContainer.classList.toggle("visible");
+            });
+
+            const chatboxSendButton = document.getElementById("chatbox-send-icon");
+            chatboxSendButton.addEventListener("click", () => {
+                checkChatboxOverflow();
+            })
+
+            const chatboxContentBody = document.getElementById("chatbox-content");
+            function checkChatboxOverflow() {
+                if (chatboxContentBody.scrollHeight > chatboxContentBody.clientHeight) {
+                    chatboxContentBody.classList.add('overflow');
+                }
+            }
         });
 
         function Next() {
@@ -89,6 +110,7 @@
             })
                 .then(response => {
                     if (!response.ok) {
+                        console.log(response);
                         throw new Error("Failed to save journal entry.");
                     }
                 })
@@ -149,5 +171,29 @@
     <div id="journal-entry-container">
         <input type="text" name="title" id="entry-title" placeholder="Title">
         <textarea name="journal-entry" id="journal-textarea" placeholder="Description"></textarea>
+        <a id="chatbox-button">
+            <svg id="chatbox-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                width="24px" fill="#e8eaed">
+                <path
+                    d="M880-80 720-240H320q-33 0-56.5-23.5T240-320v-40h440q33 0 56.5-23.5T760-440v-280h40q33 0 56.5 23.5T880-640v560ZM160-473l47-47h393v-280H160v327ZM80-280v-520q0-33 23.5-56.5T160-880h440q33 0 56.5 23.5T680-800v280q0 33-23.5 56.5T600-440H240L80-280Zm80-240v-280 280Z" />
+            </svg>
+        </a>
+    </div>
+
+    <div id="chatbox-container">
+        <div id="chatbox-body">
+            <div id="chatbox-content">
+                <div class="ai-message">Hi! I'm here to listen and support you. How's your day going?</div>
+                <div class="user-message">Hi, I am feeling kinda sad</div>
+            </div>
+            <div id="chatbox-input-container">
+                <input id="chatbox-input" type="text" id="chatbox-input">
+                <svg id="chatbox-send-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                    width="24px" fill="#e8eaed">
+                    <path
+                        d="M120-160v-640l760 320-760 320Zm80-120 474-200-474-200v140l240 60-240 60v140Zm0 0v-400 400Z" />
+                </svg>
+            </div>
+        </div>
     </div>
 </div>

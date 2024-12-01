@@ -20,7 +20,6 @@ namespace AethersJournal.Pages.Shared
         [BindProperty]
         public string? ConfirmPassword { get; set; }
 
-
         public void OnGet()
         {
         }

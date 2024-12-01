@@ -1,11 +1,20 @@
 :root {
   --main-bg-color: #F7F6F2;
+
   --navbar-bg-color: #DACDC3;
   --navbar-item-bg-color: #C39282;
+
   --title-color: #AD5B45;
   --title-fainted-color: #aa8669;
   --title-fainted-lighter-color: #d3a783;
   --title-fainted-muted-color: #c09c7f96;
+
+  --chatbox-header-color: #b98475;
+  --chatbox-bg-color: #E0CBBA;
+  --chatbox-ai-message-bg-color: #F7F6F2;
+  --chatbox-user-message-bg-color: #C39282;
+  --chatbox-ai-message-text-color: #000;
+  --chatbox-user-message-text-color: #fff;
 
   --title-font-family: "Baskervville", serif;
   --desc-font-family: "Noto Sans Thai", sans-serif;
