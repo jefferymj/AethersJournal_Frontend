@@ -33,21 +33,26 @@
 @section Scripts
 {
     <script>
+        let journalId;
+        const chatboxEntry = [];
         // defer
         document.addEventListener("DOMContentLoaded", () => {
             sendGetRequest();
 
             const chatboxContainer = document.getElementById("chatbox-container");
+            const chatboxContentContainer = document.getElementById("chatbox-content");
             const chatboxButton = document.getElementById("chatbox-button");
-            chatboxButton.addEventListener("click", () => {
-                event.preventDefault();
+            chatboxButton.addEventListener("click", async () => {
                 checkChatboxOverflow();
                 chatboxContainer.classList.toggle("visible");
+                scrollToBottom(chatboxContentContainer);
             });
 
             const chatboxSendButton = document.getElementById("chatbox-send-icon");
-            chatboxSendButton.addEventListener("click", () => {
+            chatboxSendButton.addEventListener("click", async () => {
+                await sendMessage(chatboxContentContainer, journalId);
                 checkChatboxOverflow();
+                scrollToBottom(chatboxContentContainer);
             })
 
             const chatboxContentBody = document.getElementById("chatbox-content");
@@ -83,6 +88,11 @@
 
                     title.value = data.title;
                     content.value = data.content;
+                    journalId = data.id;
+                })
+                .then(async () => {
+                    const chatboxContentContainer = document.getElementById("chatbox-content");
+                    await populateChat(chatboxContentContainer, journalId);
                 })
                 .catch(error => {
                     // console.error(error);
@@ -110,13 +120,80 @@
             })
                 .then(response => {
                     if (!response.ok) {
-                        console.log(response);
                         throw new Error("Failed to save journal entry.");
                     }
                 })
                 .catch(error => {
                     console.error(error);
                 });
+        }
+
+        async function populateChat(chatboxContainer, journalId) {
+            const response = await fetch(`http://localhost:5268/api/chat/getChat/${journalId}`);
+            if (response.ok) {
+                const chat = await response.json();
+                const messages = chat.messages;
+
+                if (messages.length == 0) return;
+
+                chatboxContainer.innerHTML = "";
+                const chatboxContainerAttribute = chatboxContainer.attributes[0].name;
+                messages.forEach(message => {
+                    if (chatboxEntry.includes(message)) return;
+                    chatboxEntry.push(message);
+                    addMessageToChatbox(chatboxContainer, chatboxContainerAttribute, message.sender, message.content);
+                });
+            }
+        }
+
+        function addMessageToChatbox(chatboxContainer, attribute, sender, message) {
+            if (chatboxEntry.length == 0) chatboxContainer.innerHTML = "";
+            const messageBox = document.createElement("div");
+            messageBox.setAttribute(attribute, "");
+
+            if (sender == "AI") {
+                messageBox.classList.add("ai-message");
+            } else {
+                messageBox.classList.add("user-message");
+            }
+
+            messageBox.innerHTML = message;
+            chatboxContainer.appendChild(messageBox);
+        };
+
+
+        async function sendMessage(chatboxContainer, journalId) {
+            const messageInput = document.getElementById("chatbox-input");
+            const messageValue = messageInput.value;
+
+            if (!messageValue) return;
+
+            messageInput.value = "";
+
+            const response = await fetch(`http://localhost:5268/api/chat/addMessage/${journalId}`, {
+                method: "POST",
+                body: JSON.stringify({ Sender: "user", Content: messageValue }),
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+
+            if (response.ok) {
+                const aiMessage = await response.json();
+
+                const chatboxContainerAttribute = chatboxContainer.attributes[0].name;
+                addMessageToChatbox(chatboxContainer, chatboxContainerAttribute, "user", messageValue);
+                addMessageToChatbox(chatboxContainer, chatboxContainerAttribute, "AI", aiMessage.aiResponse);
+            }
+        }
+
+        function scrollToBottom(container) {
+            if (container) {
+                container.scrollTo({
+                    top: container.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }
         }
     </script>
 }
@@ -125,7 +202,8 @@
     <div id="title-container">
         <div id="title-section">
             <div id="date-include-dropdown">
-                <h1 id="date-title">@Model.pageDateTime.ToString("dddd"), @Model.pageDateTime.ToString("MMMM") @Model.pageDateTime.Day
+                <h1 id="date-title">@Model.pageDateTime.ToString("dddd"), @Model.pageDateTime.ToString("MMMM")
+                    @Model.pageDateTime.Day
                     @Model.pageDateTime.Year</h1>
                 <svg id="date-dropdown-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
                     width="24px" fill="#e8eaed">
@@ -183,8 +261,7 @@
     <div id="chatbox-container">
         <div id="chatbox-body">
             <div id="chatbox-content">
-                <div class="ai-message">Hi! I'm here to listen and support you. How's your day going?</div>
-                <div class="user-message">Hi, I am feeling kinda sad</div>
+                <div class="ai-message">Enter any thoughts here and I will respond!</div>
             </div>
             <div id="chatbox-input-container">
                 <input id="chatbox-input" type="text" id="chatbox-input">
