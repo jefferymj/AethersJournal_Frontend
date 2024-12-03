@@ -74,8 +74,8 @@
         }
 
         function sendGetRequest() {
-            const url = "http://localhost:5268/api/JournalEntry/getJournalEntry/6730566a4a5b6279cae53b66/@Model.pageDateTime.ToString("yyyy-MM-dd")";
-            fetch(url)
+            const url = "http://localhost:5268/api/JournalEntry/getJournalEntry/@Model.pageDateTime.ToString("yyyy-MM-dd")";
+            fetch(url, { method: "GET", credentials: "include" })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch journal entries.");
@@ -85,7 +85,6 @@
                 .then(data => {
                     const title = document.getElementById("entry-title");
                     const content = document.getElementById("journal-textarea");
-
                     title.value = data.title;
                     content.value = data.content;
                     journalId = data.id;
@@ -100,7 +99,7 @@
         }
 
         function sendPostRequest() {
-            const url = "http://localhost:5268/api/JournalEntry/addJournalEntry/6730566a4a5b6279cae53b66";
+            const url = "http://localhost:5268/api/JournalEntry/addJournalEntry";
             const title = document.getElementById("entry-title").value;
             const content = document.getElementById("journal-textarea").value;
             const date = "@Model.pageDateTime.ToString("yyyy-MM-dd")";
@@ -116,12 +115,18 @@
                 headers: {
                     "Content-Type": "application/json"
                 },
+                credentials: "include",
                 body: JSON.stringify(journalEntryRequest)
             })
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Failed to save journal entry.");
                     }
+
+                    return response.json();
+                })
+                .then(data => {
+                    journalId = data.journalId;
                 })
                 .catch(error => {
                     console.error(error);
@@ -165,8 +170,12 @@
         async function sendMessage(chatboxContainer, journalId) {
             const messageInput = document.getElementById("chatbox-input");
             const messageValue = messageInput.value;
+            chatboxEntry.push(messageValue)
 
             if (!messageValue) return;
+
+            const chatboxContainerAttribute = chatboxContainer.attributes[0].name;
+            addMessageToChatbox(chatboxContainer, chatboxContainerAttribute, "user", messageValue);
 
             messageInput.value = "";
 
@@ -181,8 +190,7 @@
             if (response.ok) {
                 const aiMessage = await response.json();
 
-                const chatboxContainerAttribute = chatboxContainer.attributes[0].name;
-                addMessageToChatbox(chatboxContainer, chatboxContainerAttribute, "user", messageValue);
+                chatboxEntry.push(aiMessage.aiResponse)
                 addMessageToChatbox(chatboxContainer, chatboxContainerAttribute, "AI", aiMessage.aiResponse);
             }
         }

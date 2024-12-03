@@ -6,12 +6,16 @@
 
 @section Scripts {
     <script>
-        async function testCookie() {
-            const response = await fetch("http://localhost:5268/api/Session/test-cookie", {
-                method: "GET",
+        async function login() {
+            const email = document.getElementById("email-input");
+            const password = document.getElementById("password-input");
+
+            const response = await fetch("http://localhost:5268/api/user/login", {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
+                body: JSON.stringify({email: email.value, password: password.value}),
                 credentials: "include"
             });
 
@@ -31,9 +35,9 @@
         </div>
         <div class="input-container">
             <label id="password-label">Password</label>
-            <input id="password-input" />
+            <input id="password-input" type="password"/>
         </div>
-        <button onclick="testCookie()" id="login-button">Login</button>
+        <button onclick="login()" id="login-button">Login</button>
         <a id="register-link" href="/Register">Register</a>
     </div>
 </div>
