@@ -28,7 +28,8 @@ namespace AethersJournal.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var response = await _httpClient.PostAsync("https://aethersjournaldatabase.azurewebsites.net/api/session/validateSession", null);
+            // var response = await _httpClient.PostAsync("https://aethersjournaldatabase.azurewebsites.net/api/session/validateSession", null);
+            var response = await _httpClient.PostAsync("http://localhost:5268/api/session/validateSession", null);
             // if (!response.IsSuccessStatusCode)
             // {
             //     return RedirectToPage("/Login");

@@ -20,7 +20,20 @@
                 return;
             }
 
-            const response = await fetch("https://aethersjournaldatabase.azurewebsites.net/api/User/addUser", {
+            @* const response = await fetch("https://aethersjournaldatabase.azurewebsites.net/api/User/addUser", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    password: password
+                })
+            }); *@
+
+            const response = await fetch("http://localhost:5268/api/User/addUser", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
